@@ -60,6 +60,28 @@ contract NFTMarketplace is ERC721URIStorage {
         return nfts;
     }
 
+    function getNFTsByOwner(address _owner) public view returns (ListedNFT[] memory) {
+        uint totalNFTCount = _tokenId;
+        uint ownerNFTCount = 0;
+        uint currentIndex = 0;
+
+        for (uint i = 1; i <= totalNFTCount; i++) {
+            if (idToListedNFT[i].owner == _owner) {
+                ownerNFTCount++;
+            }
+        }
+
+        ListedNFT[] memory nfts = new ListedNFT[](ownerNFTCount);
+        for (uint i = 1; i <= totalNFTCount; i++) {
+            if (idToListedNFT[i].owner == _owner) {
+                nfts[currentIndex] = idToListedNFT[i];
+                currentIndex++;
+            }
+        }
+
+        return nfts;
+    }
+
     function executeSale(uint256 tokenId) public payable {
         ListedNFT memory nft = idToListedNFT[tokenId];
         require(msg.value == nft.price, "Price must be equal to the value sent");
