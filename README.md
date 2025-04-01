@@ -23,3 +23,13 @@ npx hardhat node
 ```shell
 npx hardhat ignition deploy ./ignition/modules/NFTMarketplace.ts --network localhost
 ```
+
+Wait for successful deplyment:
+
+```plaintext
+Deployed Addresses
+
+NFTMarketplace#NFTMarketplace - 0x5FbDB2315678afecb367f032d93F642f64180aa3
+```
+
+Done! Now, you can use above `0x***` smart-contract address and integrate it with web3 app or another smart-contract.
