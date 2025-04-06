@@ -82,7 +82,6 @@ describe("NftMarketplace", function () {
       console.log("Listing price:", listingPrice.toString());
 
       await nftMarketplace.connect(seller).createNft(tokenURI, price, { value: listingPrice });
-      await nftMarketplace.connect(seller).setForSale(1, true);
 
       await nftMarketplace.connect(seller).approve(nftMarketplace.getAddress(), 1);
       await nftMarketplace.connect(buyer).executeSale(1, { value: ethers.parseEther("0.1") });
@@ -100,7 +99,6 @@ describe("NftMarketplace", function () {
 
       await nftMarketplace.connect(seller).createNft(tokenURI, price, { value: listingPrice });
 
-      await nftMarketplace.connect(seller).setForSale(1, true);
       await nftMarketplace.connect(seller).approve(nftMarketplace.getAddress(), 1);
 
       await expect(
@@ -118,7 +116,7 @@ describe("NftMarketplace", function () {
 
       await expect(
         nftMarketplace.connect(buyer).executeSale(1, { value: price })
-      ).to.be.revertedWith("Nft is not for sale");
+      ).to.be.revertedWith("Contract not approved to transfer this token");
     });
   });
 });
