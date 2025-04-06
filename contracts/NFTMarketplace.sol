@@ -6,29 +6,28 @@ import 'hardhat/console.sol';
 import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol';
 
-contract NFTMarketplace is ERC721URIStorage {
+contract NftMarketplace is ERC721URIStorage {
     address payable owner;
     uint256 private _tokenId;
     uint256 public listingPrice = 0.025 ether;
 
-    mapping(uint256 => ListedNFT) public idToListedNFT;
+    mapping(uint256 => ListedNft) public idToListedNft;
 
-    event NFTCreated(uint256 tokenId, address owner, uint256 price, string tokenURI);
-    event NFTSold(uint256 tokenId, address seller, address buyer, uint256 price);
-    event NFTListingChanged(uint256 tokenId, bool isForSale, uint256 price);
+    event NftCreated(uint256 tokenId, address owner, uint256 price, string tokenURI);
+    event NftSold(uint256 tokenId, address seller, address buyer, uint256 price);
+    event NftListingChanged(uint256 tokenId, uint256 price);
 
-    struct ListedNFT {
+    struct ListedNft {
         uint256 tokenId;
         address owner;
         uint256 price;
-        bool isForSale;
     }
 
-    constructor() ERC721('NFTPitMarketplace', 'NFTPM') {
+    constructor() ERC721('NftPitMarketplace', 'NftPM') {
         owner = payable(msg.sender);
     }
 
-    function createNFT(string memory tokenURI, uint256 price) public payable returns (uint256) {
+    function createNft(string memory tokenURI, uint256 price) public payable returns (uint256) {
         require(price > 0, 'Price must be at least 0.01 ether');
         require(msg.value == listingPrice, 'Listing price must be equal to the value sent');
 
@@ -39,38 +38,38 @@ contract NFTMarketplace is ERC721URIStorage {
 
         _setTokenURI(_tokenId, tokenURI);
 
-        idToListedNFT[_tokenId] = ListedNFT({tokenId: _tokenId, owner: msg.sender, price: price, isForSale: false});
+        idToListedNft[_tokenId] = ListedNft({tokenId: _tokenId, owner: msg.sender, price: price});
 
-        emit NFTCreated(_tokenId, msg.sender, price, tokenURI);
+        emit NftCreated(_tokenId, msg.sender, price, tokenURI);
 
         return _tokenId;
     }
 
-    function getAllNFTs() public view returns (ListedNFT[] memory) {
+    function getAllNfts() public view returns (ListedNft[] memory) {
         uint nftCount = _tokenId;
-        ListedNFT[] memory nfts = new ListedNFT[](nftCount);
+        ListedNft[] memory nfts = new ListedNft[](nftCount);
 
         for (uint i = 1; i <= nftCount; i++) {
-            nfts[i - 1] = idToListedNFT[i];
+            nfts[i - 1] = idToListedNft[i];
         }
 
         return nfts;
     }
 
-    function getNFTsByOwner(address _owner) public view returns (ListedNFT[] memory) {
-        uint ownerNFTCount = 0;
+    function getNftsByOwner(address _owner) public view returns (ListedNft[] memory) {
+        uint ownerNftCount = 0;
         uint currentIndex = 0;
 
         for (uint i = 1; i <= _tokenId; i++) {
-            if (idToListedNFT[i].owner == _owner) {
-                ownerNFTCount++;
+            if (idToListedNft[i].owner == _owner) {
+                ownerNftCount++;
             }
         }
 
-        ListedNFT[] memory nfts = new ListedNFT[](ownerNFTCount);
+        ListedNft[] memory nfts = new ListedNft[](ownerNftCount);
         for (uint i = 1; i <= _tokenId; i++) {
-            if (idToListedNFT[i].owner == _owner) {
-                nfts[currentIndex] = idToListedNFT[i];
+            if (idToListedNft[i].owner == _owner) {
+                nfts[currentIndex] = idToListedNft[i];
                 currentIndex++;
             }
         }
@@ -78,28 +77,19 @@ contract NFTMarketplace is ERC721URIStorage {
         return nfts;
     }
 
-    function setForSale(uint256 tokenId, bool _isForSale) public {
-        ListedNFT storage nft = idToListedNFT[tokenId];
-        require(nft.owner == msg.sender, 'Only the owner can set the NFT for sale');
-        nft.isForSale = _isForSale;
-
-        emit NFTListingChanged(tokenId, _isForSale, nft.price);
-    }
-
     function updatePrice(uint256 tokenId, uint256 newPrice) public {
-        ListedNFT storage nft = idToListedNFT[tokenId];
+        ListedNft storage nft = idToListedNft[tokenId];
         require(nft.owner == msg.sender, 'Only the owner can update the price');
         require(newPrice > 0, 'Price must be at least 0.01 ether');
 
         nft.price = newPrice;
 
-        emit NFTListingChanged(tokenId, nft.isForSale, nft.price);
+        emit NftListingChanged(tokenId, nft.price);
     }
 
     function executeSale(uint256 tokenId) public payable {
-        ListedNFT storage nft = idToListedNFT[tokenId];
-        require(nft.isForSale, 'NFT is not for sale');
-        require(msg.sender != nft.owner, 'You cannot buy your own NFT');
+        ListedNft storage nft = idToListedNft[tokenId];
+        require(msg.sender != nft.owner, 'You cannot buy your own Nft');
         require(msg.value == nft.price, 'Price must be equal to the value sent');
         require(_isApprovedOrOwner(address(this), tokenId), 'Contract not approved to transfer this token');
 
@@ -107,12 +97,11 @@ contract NFTMarketplace is ERC721URIStorage {
         address buyer = msg.sender;
 
         nft.owner = buyer;
-        nft.isForSale = false;
 
         _transfer(seller, buyer, tokenId);
 
-        emit NFTSold(tokenId, nft.owner, msg.sender, nft.price);
-        emit NFTListingChanged(tokenId, nft.isForSale, nft.price);
+        emit NftSold(tokenId, nft.owner, msg.sender, nft.price);
+        emit NftListingChanged(tokenId, nft.price);
 
         (bool success, ) = payable(seller).call{value: nft.price}('');
         require(success, 'Transfer failed');

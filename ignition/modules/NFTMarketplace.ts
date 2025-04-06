@@ -1,9 +1,9 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 
-const NFTMarketplaceModule = buildModule("NFTMarketplace", (m) => {
-  const nftMarketplace = m.contract("NFTMarketplace",);
+const NftMarketplaceModule = buildModule("NftMarketplace", (m) => {
+  const nftMarketplace = m.contract("NftMarketplace",);
 
   return { nftMarketplace };
 });
 
-export default NFTMarketplaceModule;
+export default NftMarketplaceModule;
