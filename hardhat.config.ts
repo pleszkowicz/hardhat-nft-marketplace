@@ -2,6 +2,8 @@ import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import * as dotenv from "dotenv";
 
+require("hardhat-tracer");
+
 dotenv.config();
 console.log(process.env.SEPOLIA_RPC_URL);
 
