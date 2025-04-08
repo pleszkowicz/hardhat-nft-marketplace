@@ -9,7 +9,7 @@ import '@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol';
 contract NftMarketplace is ERC721URIStorage {
     address payable owner;
     uint256 private _tokenId;
-    uint256 public listingPrice = 0.025 ether;
+    uint256 public listingPrice = 0.001 ether;
 
     mapping(uint256 => ListedNft) public idToListedNft;
 
@@ -56,19 +56,24 @@ contract NftMarketplace is ERC721URIStorage {
         return nfts;
     }
 
+    function getNftById(uint256 tokenId) public view returns (ListedNft memory) {
+        require(idToListedNft[tokenId].tokenId != 0, "NFT not listed or does not exist");
+        return idToListedNft[tokenId];
+    }
+
     function getNftsByOwner(address _owner) public view returns (ListedNft[] memory) {
         uint ownerNftCount = 0;
         uint currentIndex = 0;
 
         for (uint i = 1; i <= _tokenId; i++) {
-            if (idToListedNft[i].owner == _owner) {
+            if (ownerOf(i) == _owner) {
                 ownerNftCount++;
             }
         }
 
         ListedNft[] memory nfts = new ListedNft[](ownerNftCount);
         for (uint i = 1; i <= _tokenId; i++) {
-            if (idToListedNft[i].owner == _owner) {
+            if (ownerOf(i) == _owner) {
                 nfts[currentIndex] = idToListedNft[i];
                 currentIndex++;
             }
@@ -96,15 +101,15 @@ contract NftMarketplace is ERC721URIStorage {
         address seller = nft.owner;
         address buyer = msg.sender;
 
-        nft.owner = buyer;
-
         _transfer(seller, buyer, tokenId);
 
-        emit NftSold(tokenId, nft.owner, msg.sender, nft.price);
+        nft.owner = buyer;
+
+        emit NftSold(tokenId, seller, buyer, nft.price);
         emit NftListingChanged(tokenId, nft.price);
 
-        (bool success, ) = payable(seller).call{value: nft.price}('');
-        require(success, 'Transfer failed');
+        payable(seller).transfer(nft.price);
+        console.log("Funds successfully transferred to seller.");
     }
 
     function _isApprovedOrOwner(address spender, uint256 tokenId) internal view returns (bool) {
