@@ -23,7 +23,7 @@ contract NftMarketplace is ERC721URIStorage {
         uint256 price;
     }
 
-    constructor() ERC721('NftPitMarketplace', 'NftPM') {
+    constructor() ERC721('Nifty Pit Marketplace', 'PIT') {
         owner = payable(msg.sender);
     }
 
@@ -57,7 +57,7 @@ contract NftMarketplace is ERC721URIStorage {
     }
 
     function getNftById(uint256 tokenId) public view returns (ListedNft memory) {
-        require(idToListedNft[tokenId].tokenId != 0, "NFT not listed or does not exist");
+        require(idToListedNft[tokenId].tokenId != 0, 'NFT not listed or does not exist');
         return idToListedNft[tokenId];
     }
 
@@ -109,7 +109,7 @@ contract NftMarketplace is ERC721URIStorage {
         emit NftListingChanged(tokenId, nft.price);
 
         payable(seller).transfer(nft.price);
-        console.log("Funds successfully transferred to seller.");
+        console.log('Funds successfully transferred to seller.');
     }
 
     function _isApprovedOrOwner(address spender, uint256 tokenId) internal view returns (bool) {
