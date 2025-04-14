@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.28;
+pragma solidity 0.8.28;
 
 import 'hardhat/console.sol';
 import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol';
+import '@openzeppelin/contracts/utils/Address.sol';
 
 contract NftMarketplace is ERC721URIStorage {
+    using Address for address payable;
+
     address payable owner;
     uint256 private _tokenId;
     uint256 public listingPrice = 0.001 ether;
@@ -108,7 +111,7 @@ contract NftMarketplace is ERC721URIStorage {
         emit NftSold(tokenId, seller, buyer, nft.price);
         emit NftListingChanged(tokenId, nft.price);
 
-        payable(seller).transfer(nft.price);
+        payable(seller).sendValue(nft.price);
         console.log('Funds successfully transferred to seller.');
     }
 
