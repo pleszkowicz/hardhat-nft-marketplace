@@ -12,6 +12,9 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,
   },
+  sourcify: {
+    enabled: true
+  },
   networks: {
     sepolia: {
       url: process.env.SEPOLIA_RPC_URL || "",
