@@ -29,6 +29,10 @@ It includes minting, listing, buying NFTs, and price updates.
 
 ## 🚀 Getting Started
 
+### Environment variables
+
+Copy `.env.example` -> `.env` and obtain required API keys.
+
 ### Install dependencies
 
 ```shell
