@@ -64,6 +64,12 @@ npx hardhat node
 npx hardhat ignition deploy ./ignition/modules/NftMarketplace.ts --network localhost
 ```
 
+or
+
+```shell
+npx hardhat ignition deploy ./ignition/modules/NftMarketplace.ts --network base-sepolia
+```
+
 #### Deployment output example
 
 ```plaintext
