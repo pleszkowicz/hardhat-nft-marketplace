@@ -5,7 +5,7 @@ import * as dotenv from "dotenv";
 require("hardhat-tracer");
 
 dotenv.config();
-console.log(process.env.BASE_SEPOLIA_RPC_URL);
+console.log(process.env.SEPOLIA_RPC_URL);
 
 const config: HardhatUserConfig = {
   solidity: "0.8.28",
@@ -16,8 +16,8 @@ const config: HardhatUserConfig = {
     enabled: true
   },
   networks: {
-    ['base-sepolia']: {
-      url: process.env.BASE_SEPOLIA_RPC_URL || "",
+    sepolia: {
+      url: process.env.SEPOLIA_RPC_URL || "",
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
     localhost: {
