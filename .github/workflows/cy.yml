@@ -20,7 +20,7 @@ jobs:
                   node-version: '20.6.1'
 
             - name: Install dependencies
-              run: npm i
+              run: pnpm i
 
             - name: Run Hardhat compile
               run: npx hardhat compile
