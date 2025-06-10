@@ -19,6 +19,11 @@ jobs:
               with:
                   node-version: '20.6.1'
 
+            - name: Setup pnpm CLI
+              uses: pnpm/action-setup@v2
+              with:
+                  version: 10.11.0
+
             - name: Install dependencies
               run: pnpm i
 
