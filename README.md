@@ -40,8 +40,8 @@ Update `.env` by obtaining required API keys as instructed in the file`.
 ### Install dependencies
 
 ```shell
-npm install
-npx hardhat compile 
+pnpm install
+npx hardhat compile
 npx hardhat help
 npx hardhat test
 ```
