@@ -35,12 +35,13 @@ It includes NFT minting, listing, buying, price updates, and safe ETH transfers 
 cp .env.example .env
 ```
 
-Update `.env` by obtaining required API keys as instructed in the file`.
+Update `.env` by obtaining required API keys as instructed in the file.
 
 ### Install dependencies
 
 ```shell
 pnpm install
+
 npx hardhat compile
 npx hardhat help
 npx hardhat test
@@ -67,7 +68,7 @@ npx hardhat ignition deploy ./ignition/modules/NftMarketplace.ts --network local
 or
 
 ```shell
-npx hardhat ignition deploy ./ignition/modules/NftMarketplace.ts --network base-sepolia
+npx hardhat ignition deploy ./ignition/modules/NftMarketplace.ts --network sepolia
 ```
 
 #### Deployment output example
